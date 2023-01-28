@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import { useRef, useState } from "react";
 
 export const NoControlados = () => {
   const form = useRef(null); // Null por que el formulario no existe aun cuando se renderiza el componente
+  const [error, setError] = useState(""); // Estado para el error
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError(""); // Limpiar el error
     // console.log(form.current);
     // console.log(new FormData(form.current)) // FormData es una clase que nos permite acceder a los datos del formulario
     const formData = new FormData(form.current); // formData es una instancia de la clase FormData
@@ -16,8 +18,9 @@ export const NoControlados = () => {
     console.log({ title, description, state });
 
     // Validación de los datos
-    if (!title.trim() || description.trim() === "") {
+    if (!title.trim() || !description.trim() || !state.trim()) {
       console.log("Datos vacíos, llenar todos los campos");
+      setError("Datos vacíos, llenar todos los campos");
       return;
     }
     // Enviar los datos al servidor
@@ -48,7 +51,9 @@ export const NoControlados = () => {
         <option value="pendiente">Pendiente</option>
         <option value="completado">Completado</option>
       </select>
-
+      {
+        error !== "" && <div className="alert alert-danger">{error}</div> // Si error es diferente de vacío, entonces se muestra el mensaje de error
+      }
       <button className="btn btn-primary btn-block" type="submit">
         Procesar
       </button>
